@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dashboard – Nexus Lima</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body data-page="dashboard">
+  <header class="app-header">
+    <div class="container bar">
+      <div class="brand"><span class="dot"></span>Nexus Lima <small>dashboard do cliente</small></div>
+      <div class="row">
+        <div class="small">Olá, <b id="nomeUser">Cliente</b></div>
+        <button class="btn secondary" id="logoutBtn">Sair</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="grid">
+      <div class="card col-4">
+        <h3>💰 Saldo</h3>
+        <div id="saldo" style="font-size:1.8rem; font-weight:700; margin-top:6px">R$ 0,00</div>
+        <div class="sep"></div>
+        
+        <!-- Botões para adicionar dinheiro -->
+        <div class="row mt-16">
+          <button class="btn primary grow" onclick="openAddMoneyModal()">
+            💰 Adicionar Dinheiro
+          </button>
+        </div>
+        
+        <!-- Seção PIX para envio -->
+        <div class="sep mt-16"></div>
+        <h4 style="margin:16px 0 8px">📤 Enviar PIX</h4>
+        <div class="inline">
+          <input id="pixValor" type="number" class="input" placeholder="Valor do PIX" min="0" step="0.01" />
+          <button class="btn primary" id="btnPix">Enviar PIX</button>
+        </div>
+        <div id="pixExtra" class="mt-8 hidden">
+          <div class="inline">
+            <select id="pixTipo" class="input" style="max-width:180px">
+              <option value="telefone">Telefone</option>
+              <option value="cpf">CPF</option>
+              <option value="cnpj">CNPJ</option>
+              <option value="email">E-mail</option>
+              <option value="aleatoria">Chave Aleatória</option>
+            </select>
+            <input id="pixChave" class="input" placeholder="Informe a chave PIX" />
+          </div>
+          <div id="pixHelp" class="help mt-8"></div>
+          <button class="btn success mt-8" id="btnConfirmPix">Confirmar PIX</button>
+        </div>
+      </div>
+
+      <div class="card col-8">
+        <h3>📈 Evolução do saldo</h3>
+        <canvas id="saldoChart" style="max-height:280px; margin-top:8px"></canvas>
+      </div>
+
+      <div class="card col-12">
+        <h3>📜 Extrato (últimas)</h3>
+        <div id="extrato" class="mt-8"></div>
+      </div>
+    </section>
+
+    <!-- Seção: Benefícios -->
+    <section class="mt-32">
+      <h2 class="section-title">Por que contratar a <span class="highlight">Nexus Lima</span>?</h2>
+      <div class="grid">
+        <div class="card col-4">
+          <h3>🚀 Agilidade</h3>
+          <p>Processos rápidos e eficientes para que seu negócio nunca pare.</p>
+        </div>
+        <div class="card col-4">
+          <h3>🔒 Segurança</h3>
+          <p>Tecnologia de ponta para proteger seus dados e transações.</p>
+        </div>
+        <div class="card col-4">
+          <h3>📊 Controle</h3>
+          <p>Relatórios e métricas para acompanhar cada detalhe do seu negócio.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Seção: Tudo em uma única plataforma -->
+    <section class="highlight-section mt-32">
+      <h2>Tudo o que o seu negócio precisa em uma única plataforma</h2>
+      <p>Da gestão financeira ao atendimento, a Nexus Lima reúne todas as ferramentas essenciais para o crescimento da sua empresa.</p>
+      <button class="btn primary mt-8">Conheça mais</button>
+    </section>
+
+    <!-- Seção: Depoimentos -->
+    <section class="mt-32">
+      <h2 class="section-title">O que dizem nossos clientes</h2>
+      <div class="grid">
+        <div class="card col-4">
+          <p>"A Nexus Lima transformou a gestão financeira da nossa empresa. Atendimento impecável!"</p>
+          <small>- Carlos Mendes, CEO da MendesTech</small>
+        </div>
+        <div class="card col-4">
+          <p>"Desde que contratamos, conseguimos reduzir custos e aumentar a eficiência."</p>
+          <small>- Juliana Silva, Diretora da Alpha Solutions</small>
+        </div>
+        <div class="card col-4">
+          <p>"Equipe sempre pronta para ajudar. Recomendo para qualquer empresa séria."</p>
+          <small>- Roberto Santos, Gerente da Nova Era Ltda</small>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Modal para Adicionar Dinheiro -->
+  <div id="addMoneyModal" class="add-money-modal">
+    <div class="add-money-modal-content">
+      <div class="add-money-modal-header">
+        <h3>💰 Adicionar Dinheiro à Conta</h3>
+        <button class="add-money-close" onclick="closeAddMoneyModal()">×</button>
+      </div>
+      <div class="add-money-modal-body">
+        <div class="payment-methods">
+          <div class="payment-method" onclick="selectPaymentMethod('pix')">
+            <div class="payment-icon">📱</div>
+            <div class="payment-info">
+              <h4>PIX</h4>
+              <p>Transferência instantânea</p>
+            </div>
+            <div class="payment-radio">
+              <input type="radio" name="paymentMethod" value="pix" id="pixRadio">
+              <span class="radio-custom"></span>
+            </div>
+          </div>
+          
+          <div class="payment-method" onclick="selectPaymentMethod('boleto')">
+            <div class="payment-icon">📄</div>
+            <div class="payment-info">
+              <h4>Boleto Bancário</h4>
+              <p>Pagamento em até 3 dias úteis</p>
+            </div>
+            <div class="payment-radio">
+              <input type="radio" name="paymentMethod" value="boleto" id="boletoRadio">
+              <span class="radio-custom"></span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="payment-form mt-24">
+          <div class="form-group">
+            <label for="addMoneyAmount">Valor a Adicionar</label>
+            <input 
+              type="number" 
+              id="addMoneyAmount" 
+              class="input" 
+              placeholder="R$ 0,00" 
+              min="0.01" 
+              step="0.01"
+              required
+            />
+          </div>
+          
+          <div class="form-group">
+            <label for="addMoneyDescription">Descrição (opcional)</label>
+            <input 
+              type="text" 
+              id="addMoneyDescription" 
+              class="input" 
+              placeholder="Ex: Depósito para pagamento de contas"
+            />
+          </div>
+        </div>
+      </div>
+      
+      <div class="add-money-modal-footer">
+        <button class="btn secondary" onclick="closeAddMoneyModal()">Cancelar</button>
+        <button class="btn primary" onclick="processAddMoney()">Confirmar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chatbot para Desenvolvedores -->
+  <div id="devChatbot" class="dev-chatbot">
+    <div class="dev-chatbot-header" onclick="toggleDevChatbot()">
+      <span class="dev-chatbot-icon">👨‍💻</span>
+      <span class="dev-chatbot-title">Suporte Técnico</span>
+      <span class="dev-chatbot-toggle">−</span>
+    </div>
+    <div class="dev-chatbot-body" id="devChatbotBody">
+      <div class="dev-chat-messages" id="devChatMessages">
+        <div class="message bot">
+          <div class="message-content">
+            Olá! Precisa de ajuda técnica? Escolha um especialista:
+          </div>
+        </div>
+        
+        <div class="dev-specialists">
+          <div class="specialist-card" onclick="selectSpecialist('macauly')">
+            <div class="specialist-avatar">🛡️</div>
+            <div class="specialist-info">
+              <h4>Macauly Lima</h4>
+              <p>Especialista em Segurança de Dados</p>
+            </div>
+          </div>
+          
+          <div class="specialist-card" onclick="selectSpecialist('armando')">
+            <div class="specialist-avatar">⚙️</div>
+            <div class="specialist-info">
+              <h4>Armando Oliveira</h4>
+              <p>Especialista em Back-end</p>
+            </div>
+          </div>
+          
+          <div class="specialist-card" onclick="selectSpecialist('felipe')">
+            <div class="specialist-avatar">🎨</div>
+            <div class="specialist-info">
+              <h4>Felipe Amorim</h4>
+              <p>Especialista em Front-end</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="dev-chat-input" id="devChatInput" style="display: none;">
+        <input type="text" id="devMessageInput" placeholder="Digite sua mensagem..." />
+        <button onclick="sendDevMessage()" class="dev-chat-send">➤</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

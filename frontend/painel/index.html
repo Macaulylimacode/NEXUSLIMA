@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Painel do Gerente</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  <h2>Painel</h2>
+  <button class="btn danger" id="logoutBtn">Sair</button>
+</header>
+
+<div class="container">
+  <div class="card metrics">
+    <h3>Métricas</h3>
+    <ul id="metricas"></ul>
+  </div>
+
+  <div class="card">
+    <h3>Clientes</h3>
+    <input type="text" id="filtro" placeholder="🔍 Filtrar clientes..." />
+    <table class="table" id="tabelaClientes">
+      <thead>
+        <tr>
+          <th>Nome</th>
+          <th>Empresa</th>
+          <th>CPF/CNPJ</th>
+          <th>Saldo</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    <div class="pagination">
+      <button id="prevBtn">Anterior</button>
+      <span id="pageInfo">Página 1 de 1</span>
+      <button id="nextBtn">Próximo</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Detalhes -->
+<div class="modal" id="modalDetalhes">
+  <div class="modal-content">
+    <span class="close-btn" id="fecharModal">&times;</span>
+    <h3>Detalhes do Cliente</h3>
+    <p><strong>Nome:</strong> <span id="detNome"></span></p>
+    <p><strong>Empresa:</strong> <span id="detEmpresa"></span></p>
+    <p><strong>CPF/CNPJ:</strong> <span id="detDoc"></span></p>
+    <p><strong>Saldo:</strong> <span id="detSaldo"></span></p>
+    <p><strong>Data de Cadastro:</strong> <span id="detData"></span></p>
+    <p><strong>Contratos:</strong> <span id="detContratos"></span></p>
+    <p><strong>Movimentações:</strong> <span id="detMov"></span></p>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

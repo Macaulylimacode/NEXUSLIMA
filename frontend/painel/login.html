@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Login – Nexus Lima</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body data-page="login" class="center-screen" style="background-image: url('meu logo.png'); background-size: cover; background-position: center; background-repeat: no-repeat;">
+  <!-- Logo NEXUS LIMA -->
+  <div class="logo-container">
+    <div class="logo">
+      <span class="logo-icon">⚡</span>
+      <div class="logo-text">
+        <span class="logo-main">NEXUS</span>
+        <span class="logo-sub">LIMA</span>
+      </div>
+    </div>
+  </div>
+  
+  <main class="card" style="width:min(480px, 100%); padding:28px;">
+    <div class="row" style="justify-content:space-between">
+      <div class="brand"><span class="dot"></span>Nexus Lima <small>acesso seguro</small></div>
+      <a class="small" href="#" onclick="openHelpModal()">Precisa de ajuda?</a>
+    </div>
+    <div class="sep"></div>
+
+    <h3 style="margin:0 0 8px">Bem-vindo de volta</h3>
+    <div class="sub">Entre com seu CPF e senha</div>
+
+    <form id="formLogin" class="mt-16">
+      <div class="inline">
+        <input id="cpf" class="input" inputmode="numeric" autocomplete="username" placeholder="CPF" />
+      </div>
+      <div class="inline">
+        <input id="senha" class="input" type="password" autocomplete="current-password" placeholder="Senha" />
+      </div>
+      <div class="row" style="justify-content:space-between">
+        <label class="small"><input type="checkbox" /> Lembrar</label>
+        <a href="recuperar-senha.html" class="small">Esqueceu a senha?</a>
+      </div>
+      <div class="row mt-16">
+        <button class="btn primary grow" type="submit">Entrar</button>
+      </div>
+      
+    </form>
+  </main>
+
+  <!-- Modal de Ajuda -->
+  <div id="helpModal" class="help-modal">
+    <div class="help-modal-content">
+      <div class="help-modal-header">
+        <h3>❓ Central de Ajuda</h3>
+        <button class="help-close" onclick="closeHelpModal()">×</button>
+      </div>
+      <div class="help-modal-body">
+        <div class="help-search">
+          <input type="text" id="helpSearch" placeholder="🔍 Pesquisar dúvidas..." />
+        </div>
+        
+        <div class="help-categories">
+          <div class="help-category">
+            <h4>🔐 Acesso e Login</h4>
+            <div class="help-item" onclick="toggleHelpAnswer('login-1')">
+              <div class="help-question">
+                <span>Como faço para acessar minha conta?</span>
+                <span class="help-toggle">+</span>
+              </div>
+              <div class="help-answer" id="login-1">
+                <p>Para acessar sua conta, digite seu CPF no campo "CPF" e sua senha no campo "Senha". Clique em "Entrar" para fazer login.</p>
+              </div>
+            </div>
+            
+            <div class="help-item" onclick="toggleHelpAnswer('login-2')">
+              <div class="help-question">
+                <span>Esqueci minha senha, o que fazer?</span>
+                <span class="help-toggle">+</span>
+              </div>
+              <div class="help-answer" id="login-2">
+                <p>Clique em "Esqueceu a senha?" abaixo do formulário. Você será redirecionado para uma página onde poderá informar seu e-mail e CPF para receber instruções de recuperação.</p>
+              </div>
+            </div>
+            
+            <div class="help-item" onclick="toggleHelpAnswer('login-3')">
+              <div class="help-question">
+                <span>Quais são as credenciais de teste?</span>
+                <span class="help-toggle">+</span>
+              </div>
+              <div class="help-answer" id="login-3">
+                <p><strong>Cliente:</strong> CPF: 000.000.001-91 / Senha: 1234<br><strong>Gerente:</strong> CPF: 111.444.777-35 / Senha: admin</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="help-category">
+            <h4>💳 Conta e Pagamentos</h4>
+            <div class="help-item" onclick="toggleHelpAnswer('payment-1')">
+              <div class="help-question">
+                <span>Como funciona o sistema de PIX?</span>
+                <span class="help-toggle">+</span>
+              </div>
+              <div class="help-answer" id="payment-1">
+                <p>O sistema PIX permite transferências instantâneas. Após o login, você pode inserir o valor e escolher o tipo de chave (CPF, telefone, e-mail, etc.) para realizar a transferência.</p>
+              </div>
+            </div>
+            
+            <div class="help-item" onclick="toggleHelpAnswer('payment-2')">
+              <div class="help-question">
+                <span>Como visualizo meu saldo e extrato?</span>
+                <span class="help-toggle">+</span>
+              </div>
+              <div class="help-answer" id="payment-2">
+                <p>Após o login, você será direcionado para o dashboard onde poderá visualizar seu saldo atual, gráfico de evolução e histórico de transações.</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="help-category">
+            <h4>🛡️ Segurança</h4>
+            <div class="help-item" onclick="toggleHelpAnswer('security-1')">
+              <div class="help-question">
+                <span>Como manter minha conta segura?</span>
+                <span class="help-toggle">+</span>
+              </div>
+              <div class="help-answer" id="security-1">
+                <p>• Nunca compartilhe suas credenciais<br>• Use senhas fortes e únicas<br>• Sempre faça logout ao sair<br>• Monitore regularmente suas transações</p>
+              </div>
+            </div>
+            
+            <div class="help-item" onclick="toggleHelpAnswer('security-2')">
+              <div class="help-question">
+                <span>O que fazer se suspeitar de atividade suspeita?</span>
+                <span class="help-toggle">+</span>
+              </div>
+              <div class="help-answer" id="security-2">
+                <p>Entre em contato imediatamente com nosso suporte através do chatbot ou altere sua senha. Em caso de transações não autorizadas, reporte imediatamente.</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="help-category">
+            <h4>💬 Suporte</h4>
+            <div class="help-item" onclick="toggleHelpAnswer('support-1')">
+              <div class="help-question">
+                <span>Como usar o chatbot de suporte?</span>
+                <span class="help-toggle">+</span>
+              </div>
+              <div class="help-answer" id="support-1">
+                <p>O chatbot está disponível no canto inferior direito da tela. Clique no ícone 💬 para abrir e digite suas dúvidas. Ele responderá automaticamente com informações úteis.</p>
+              </div>
+            </div>
+            
+            <div class="help-item" onclick="toggleHelpAnswer('support-2')">
+              <div class="help-question">
+                <span>Preciso de ajuda adicional, como proceder?</span>
+                <span class="help-toggle">+</span>
+              </div>
+              <div class="help-answer" id="support-2">
+                <p>Se o chatbot não conseguir resolver sua dúvida, você pode usar o sistema de cookies (ícone 👆) para configurar suas preferências ou entrar em contato com nossa equipe de suporte.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="help-modal-footer">
+        <button class="btn secondary" onclick="closeHelpModal()">Fechar</button>
+        <button class="btn primary" onclick="openHelpModal()">Mais Ajuda</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="script.js"></script>
+  
+  <!-- Chatbot -->
+  <div id="chatbot" class="chatbot">
+    <div class="chatbot-header" onclick="toggleChatbot()">
+      <span class="chatbot-icon">💬</span>
+      <span class="chatbot-title">Assistente</span>
+      <span class="chatbot-toggle">−</span>
+    </div>
+    <div class="chatbot-body" id="chatbotBody">
+      <div class="chat-messages" id="chatMessages">
+        <div class="message bot">
+          <div class="message-content">
+            Olá! Como posso ajudar você hoje?
+          </div>
+        </div>
+      </div>
+      <div class="chat-input">
+        <input type="text" id="chatInput" placeholder="Digite sua mensagem..." />
+        <button onclick="sendMessage()" class="chat-send">➤</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Cookies Reference -->
+  <div class="cookies-reference" onclick="openCookiesModal()" title="Referência do cookies">
+    <span class="cookies-icon">👆</span>
+  </div>
+  
+  <!-- Cookies Modal -->
+  <div id="cookiesModal" class="cookies-modal">
+    <div class="cookies-modal-content">
+      <div class="cookies-modal-header">
+        <h3>Gerenciamento de Cookies</h3>
+        <button class="cookies-close" onclick="closeCookiesModal()">×</button>
+      </div>
+      <div class="cookies-modal-body">
+        <p class="cookies-description">
+          Este site utiliza cookies para melhorar sua experiência. Você pode controlar quais tipos de cookies deseja permitir.
+        </p>
+        
+        <div class="cookie-category">
+          <div class="cookie-category-header">
+            <label class="cookie-toggle">
+              <input type="checkbox" id="essentialCookies" checked disabled>
+              <span class="cookie-slider"></span>
+            </label>
+            <div class="cookie-info">
+              <h4>Cookies Essenciais</h4>
+              <p>Necessários para o funcionamento básico do site. Não podem ser desativados.</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="cookie-category">
+          <div class="cookie-category-header">
+            <label class="cookie-toggle">
+              <input type="checkbox" id="analyticsCookies">
+              <span class="cookie-slider"></span>
+            </label>
+            <div class="cookie-info">
+              <h4>Cookies de Analytics</h4>
+              <p>Nos ajudam a entender como você usa o site para melhorar nossos serviços.</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="cookie-category">
+          <div class="cookie-category-header">
+            <label class="cookie-toggle">
+              <input type="checkbox" id="marketingCookies">
+              <span class="cookie-slider"></span>
+            </label>
+            <div class="cookie-info">
+              <h4>Cookies de Marketing</h4>
+              <p>Usados para mostrar anúncios relevantes e medir a eficácia das campanhas.</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="cookie-category">
+          <div class="cookie-category-header">
+            <label class="cookie-toggle">
+              <input type="checkbox" id="preferenceCookies">
+              <span class="cookie-slider"></span>
+            </label>
+            <div class="cookie-info">
+              <h4>Cookies de Preferências</h4>
+              <p>Lembram suas escolhas para personalizar sua experiência.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="cookies-modal-footer">
+        <button class="btn secondary" onclick="resetCookiesPreferences()">Restaurar Padrão</button>
+        <button class="btn primary" onclick="saveCookiesPreferences()">Salvar Preferências</button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

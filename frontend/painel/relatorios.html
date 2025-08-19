@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Relatórios – Nexus Lima</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body data-page="relatorios">
+  <header class="app-header">
+    <div class="container bar">
+      <div class="brand"><span class="dot"></span>Nexus Lima <small>relatórios e análises</small></div>
+      <nav>
+        <button class="btn secondary" onclick="window.location.href='gerente.html'">
+          ← Voltar ao Painel
+        </button>
+      </nav>
+      <button class="btn secondary" id="logoutBtn">Sair</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- Filtros e Controles -->
+    <section class="card mb-24">
+      <div class="row" style="justify-content:space-between; align-items:center;">
+        <h3>🔍 Filtros de Relatório</h3>
+        <div class="row" style="gap: 12px;">
+          <select id="periodoFiltro" class="input">
+            <option value="30">Últimos 30 dias</option>
+            <option value="90">Últimos 90 dias</option>
+            <option value="180">Últimos 6 meses</option>
+            <option value="365">Último ano</option>
+            <option value="custom">Período personalizado</option>
+          </select>
+          <button class="btn primary" onclick="gerarRelatorio()">Gerar Relatório</button>
+          <button class="btn secondary" onclick="exportarRelatorio()">📊 Exportar</button>
+        </div>
+      </div>
+      
+      <div class="row mt-16" id="periodoCustom" style="display: none;">
+        <input type="date" id="dataInicio" class="input" />
+        <span style="margin: 0 8px;">até</span>
+        <input type="date" id="dataFim" class="input" />
+      </div>
+    </section>
+
+    <!-- Resumo Executivo -->
+    <section class="grid mb-24">
+      <div class="card col-3">
+        <h4>💰 Receita Total</h4>
+        <div class="metric-value-large" id="receitaTotal">R$ 0,00</div>
+        <div class="metric-change positive">+12.5% vs mês anterior</div>
+      </div>
+      
+      <div class="card col-3">
+        <h4>👥 Clientes Ativos</h4>
+        <div class="metric-value-large" id="clientesAtivos">0</div>
+        <div class="metric-change positive">+3 novos este mês</div>
+      </div>
+      
+      <div class="card col-3">
+        <h4>📈 Projetos em Andamento</h4>
+        <div class="metric-value-large" id="projetosAndamento">0</div>
+        <div class="metric-change neutral">5 concluídos este mês</div>
+      </div>
+      
+      <div class="card col-3">
+        <h4>🎯 Taxa de Conversão</h4>
+        <div class="metric-value-large" id="taxaConversao">0%</div>
+        <div class="metric-change positive">+2.1% vs mês anterior</div>
+      </div>
+    </section>
+
+    <!-- Relatório de Transações -->
+    <section class="card mb-24">
+      <div class="row" style="justify-content:space-between; align-items:center;">
+        <h3>💳 Relatório de Transações Bancárias</h3>
+        <div class="row" style="gap: 8px;">
+          <button class="btn small" onclick="filtrarTransacoes('todas')">Todas</button>
+          <button class="btn small" onclick="filtrarTransacoes('pix')">PIX</button>
+          <button class="btn small" onclick="filtrarTransacoes('boleto')">Boleto</button>
+          <button class="btn small" onclick="filtrarTransacoes('transferencia')">Transferência</button>
+        </div>
+      </div>
+      
+      <div class="table-container mt-16">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Data</th>
+              <th>Cliente</th>
+              <th>Tipo</th>
+              <th>Valor</th>
+              <th>Status</th>
+              <th>Descrição</th>
+            </tr>
+          </thead>
+          <tbody id="tbodyTransacoes">
+            <!-- Dados serão carregados dinamicamente -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Relatório de Projetos -->
+    <section class="grid mb-24">
+      <div class="card col-6">
+        <h3>🚀 Status dos Projetos</h3>
+        <canvas id="projetosChart" style="max-height: 300px;"></canvas>
+      </div>
+      
+      <div class="card col-6">
+        <h3>📊 Projetos por Cliente</h3>
+        <div class="projetos-cliente" id="projetosCliente">
+          <!-- Dados serão carregados dinamicamente -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Relatório Detalhado por Cliente -->
+    <section class="card">
+      <h3>👤 Relatório Detalhado por Cliente</h3>
+      <div class="row mt-16">
+        <select id="clienteSelecionado" class="input" style="max-width: 300px;">
+          <option value="">Selecione um cliente...</option>
+        </select>
+        <button class="btn primary" onclick="gerarRelatorioCliente()">Gerar Relatório</button>
+      </div>
+      
+      <div id="relatorioCliente" class="mt-24" style="display: none;">
+        <div class="grid">
+          <div class="card col-4">
+            <h4>📈 Resumo Financeiro</h4>
+            <div class="cliente-metric">
+              <span>Saldo Atual:</span>
+              <strong id="clienteSaldo">R$ 0,00</strong>
+            </div>
+            <div class="cliente-metric">
+              <span>Total de Transações:</span>
+              <strong id="clienteTransacoes">0</strong>
+            </div>
+            <div class="cliente-metric">
+              <span>Valor Médio:</span>
+              <strong id="clienteValorMedio">R$ 0,00</strong>
+            </div>
+          </div>
+          
+          <div class="card col-4">
+            <h4>📋 Projetos</h4>
+            <div class="cliente-metric">
+              <span>Em Andamento:</span>
+              <strong id="clienteProjetosAndamento">0</strong>
+            </div>
+            <div class="cliente-metric">
+              <span>Concluídos:</span>
+              <strong id="clienteProjetosConcluidos">0</strong>
+            </div>
+            <div class="cliente-metric">
+              <span>Taxa de Sucesso:</span>
+              <strong id="clienteTaxaSucesso">0%</strong>
+            </div>
+          </div>
+          
+          <div class="card col-4">
+            <h4>📊 Atividade Recente</h4>
+            <div class="cliente-metric">
+              <span>Última Transação:</span>
+              <strong id="clienteUltimaTransacao">-</strong>
+            </div>
+            <div class="cliente-metric">
+              <span>Último Login:</span>
+              <strong id="clienteUltimoLogin">-</strong>
+            </div>
+            <div class="cliente-metric">
+              <span>Status:</span>
+              <strong id="clienteStatus">-</strong>
+            </div>
+          </div>
+        </div>
+        
+        <div class="mt-24">
+          <h4>📜 Histórico de Transações</h4>
+          <div class="table-container mt-16">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Data</th>
+                  <th>Tipo</th>
+                  <th>Valor</th>
+                  <th>Status</th>
+                  <th>Descrição</th>
+                </tr>
+              </thead>
+              <tbody id="clienteTransacoesDetalhadas">
+                <!-- Dados serão carregados dinamicamente -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="script.js"></script>
+  <script>
+    // Dados simulados para demonstração
+    const dadosSimulados = {
+      transacoes: [
+        { data: '2025-01-15', cliente: 'Carlos Mendes', tipo: 'PIX', valor: 1500.00, status: 'Concluído', descricao: 'Pagamento de projeto' },
+        { data: '2025-01-14', cliente: 'Juliana Silva', tipo: 'Boleto', valor: 2300.00, status: 'Pendente', descricao: 'Renovação de contrato' },
+        { data: '2025-01-13', cliente: 'Roberto Santos', tipo: 'Transferência', valor: 800.00, status: 'Concluído', descricao: 'Serviços de consultoria' },
+        { data: '2025-01-12', cliente: 'Ana Costa', tipo: 'PIX', valor: 3200.00, status: 'Concluído', descricao: 'Desenvolvimento de sistema' },
+        { data: '2025-01-11', cliente: 'Pedro Alves', tipo: 'Boleto', valor: 1200.00, status: 'Pendente', descricao: 'Manutenção mensal' }
+      ],
+      projetos: [
+        { cliente: 'Carlos Mendes', emAndamento: 2, concluidos: 5, taxaSucesso: 85 },
+        { cliente: 'Juliana Silva', emAndamento: 1, concluidos: 3, taxaSucesso: 92 },
+        { cliente: 'Roberto Santos', emAndamento: 0, concluidos: 2, taxaSucesso: 78 },
+        { cliente: 'Ana Costa', emAndamento: 3, concluidos: 7, taxaSucesso: 89 },
+        { cliente: 'Pedro Alves', emAndamento: 1, concluidos: 4, taxaSucesso: 81 }
+      ]
+    };
+
+    // Inicialização da página
+    document.addEventListener('DOMContentLoaded', function() {
+      carregarDadosIniciais();
+      configurarEventos();
+    });
+
+    function configurarEventos() {
+      // Filtro de período personalizado
+      document.getElementById('periodoFiltro').addEventListener('change', function() {
+        const periodoCustom = document.getElementById('periodoCustom');
+        if (this.value === 'custom') {
+          periodoCustom.style.display = 'flex';
+        } else {
+          periodoCustom.style.display = 'none';
+          gerarRelatorio();
+        }
+      });
+
+      // Carregar lista de clientes
+      carregarListaClientes();
+    }
+
+    function carregarDadosIniciais() {
+      // Carregar transações
+      carregarTransacoes();
+      
+      // Carregar projetos
+      carregarProjetos();
+      
+      // Carregar métricas
+      carregarMetricas();
+    }
+
+    function carregarTransacoes() {
+      const tbody = document.getElementById('tbodyTransacoes');
+      tbody.innerHTML = '';
+      
+      dadosSimulados.transacoes.forEach(transacao => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${new Date(transacao.data).toLocaleDateString('pt-BR')}</td>
+          <td>${transacao.cliente}</td>
+          <td><span class="badge badge-${transacao.tipo.toLowerCase()}">${transacao.tipo}</span></td>
+          <td>${formatarMoeda(transacao.valor)}</td>
+          <td><span class="badge badge-${transacao.status === 'Concluído' ? 'success' : 'warning'}">${transacao.status}</span></td>
+          <td>${transacao.descricao}</td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    function carregarProjetos() {
+      // Gráfico de status dos projetos
+      const ctx = document.getElementById('projetosChart').getContext('2d');
+      new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: ['Em Andamento', 'Concluídos', 'Pendentes'],
+          datasets: [{
+            data: [7, 21, 3],
+            backgroundColor: ['#8e5bff', '#00d4aa', '#ff6b6b']
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'bottom'
+            }
+          }
+        }
+      });
+
+      // Lista de projetos por cliente
+      const container = document.getElementById('projetosCliente');
+      container.innerHTML = '';
+      
+      dadosSimulados.projetos.forEach(projeto => {
+        const div = document.createElement('div');
+        div.className = 'projeto-cliente-item';
+        div.innerHTML = `
+          <div class="projeto-cliente-header">
+            <h4>${projeto.cliente}</h4>
+            <span class="projeto-status">${projeto.taxaSucesso}% sucesso</span>
+          </div>
+          <div class="projeto-cliente-stats">
+            <span>🔄 ${projeto.emAndamento} em andamento</span>
+            <span>✅ ${projeto.concluidos} concluídos</span>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function carregarMetricas() {
+      // Calcular métricas
+      const receitaTotal = dadosSimulados.transacoes
+        .filter(t => t.status === 'Concluído')
+        .reduce((sum, t) => sum + t.valor, 0);
+      
+      const clientesAtivos = dadosSimulados.projetos
+        .filter(p => p.emAndamento > 0).length;
+      
+      const projetosAndamento = dadosSimulados.projetos
+        .reduce((sum, p) => sum + p.emAndamento, 0);
+      
+      // Atualizar interface
+      document.getElementById('receitaTotal').textContent = formatarMoeda(receitaTotal);
+      document.getElementById('clientesAtivos').textContent = clientesAtivos;
+      document.getElementById('projetosAndamento').textContent = projetosAndamento;
+      document.getElementById('taxaConversao').textContent = '87%';
+    }
+
+    function carregarListaClientes() {
+      const select = document.getElementById('clienteSelecionado');
+      select.innerHTML = '<option value="">Selecione um cliente...</option>';
+      
+      dadosSimulados.projetos.forEach(projeto => {
+        const option = document.createElement('option');
+        option.value = projeto.cliente;
+        option.textContent = projeto.cliente;
+        select.appendChild(option);
+      });
+    }
+
+    function filtrarTransacoes(tipo) {
+      const tbody = document.getElementById('tbodyTransacoes');
+      tbody.innerHTML = '';
+      
+      let transacoesFiltradas = dadosSimulados.transacoes;
+      if (tipo !== 'todas') {
+        transacoesFiltradas = dadosSimulados.transacoes.filter(t => 
+          t.tipo.toLowerCase() === tipo
+        );
+      }
+      
+      transacoesFiltradas.forEach(transacao => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${new Date(transacao.data).toLocaleDateString('pt-BR')}</td>
+          <td>${transacao.cliente}</td>
+          <td><span class="badge badge-${transacao.tipo.toLowerCase()}">${transacao.tipo}</span></td>
+          <td>${formatarMoeda(transacao.valor)}</td>
+          <td><span class="badge badge-${transacao.status === 'Concluído' ? 'success' : 'warning'}">${transacao.status}</span></td>
+          <td>${transacao.descricao}</td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    function gerarRelatorio() {
+      // Simula geração de relatório
+      alert('Relatório gerado com sucesso!');
+    }
+
+    function exportarRelatorio() {
+      // Simula exportação
+      alert('Relatório exportado em formato PDF!');
+    }
+
+    function gerarRelatorioCliente() {
+      const cliente = document.getElementById('clienteSelecionado').value;
+      if (!cliente) {
+        alert('Por favor, selecione um cliente.');
+        return;
+      }
+      
+      // Mostrar seção de relatório
+      document.getElementById('relatorioCliente').style.display = 'block';
+      
+      // Buscar dados do cliente
+      const projetoCliente = dadosSimulados.projetos.find(p => p.cliente === cliente);
+      const transacoesCliente = dadosSimulados.transacoes.filter(t => t.cliente === cliente);
+      
+      if (projetoCliente) {
+        // Atualizar métricas do cliente
+        document.getElementById('clienteSaldo').textContent = formatarMoeda(2500.00);
+        document.getElementById('clienteTransacoes').textContent = transacoesCliente.length;
+        document.getElementById('clienteValorMedio').textContent = formatarMoeda(1200.00);
+        
+        document.getElementById('clienteProjetosAndamento').textContent = projetoCliente.emAndamento;
+        document.getElementById('clienteProjetosConcluidos').textContent = projetoCliente.concluidos;
+        document.getElementById('clienteTaxaSucesso').textContent = projetoCliente.taxaSucesso + '%';
+        
+        document.getElementById('clienteUltimaTransacao').textContent = '15/01/2025';
+        document.getElementById('clienteUltimoLogin').textContent = 'Hoje';
+        document.getElementById('clienteStatus').textContent = 'Ativo';
+        
+        // Carregar transações detalhadas
+        const tbody = document.getElementById('clienteTransacoesDetalhadas');
+        tbody.innerHTML = '';
+        
+        transacoesCliente.forEach(transacao => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${new Date(transacao.data).toLocaleDateString('pt-BR')}</td>
+            <td><span class="badge badge-${transacao.tipo.toLowerCase()}">${transacao.tipo}</span></td>
+            <td>${formatarMoeda(transacao.valor)}</td>
+            <td><span class="badge badge-${transacao.status === 'Concluído' ? 'success' : 'warning'}">${transacao.status}</span></td>
+            <td>${transacao.descricao}</td>
+          `;
+          tbody.appendChild(row);
+        });
+      }
+    }
+  </script>
+</body>
+</html>
